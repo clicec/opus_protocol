@@ -14,6 +14,10 @@ body:
         Records should conform to
         [schema/record.schema.json](../../schema/record.schema.json).
 
+        Host the records yourself and link them below — this issue is the index entry. You
+        may also open a PR adding a copy under [records/](../../records), which holds a
+        reference copy only; read the caveats there before treating it as an archive.
+
   - type: input
     id: model
     attributes:

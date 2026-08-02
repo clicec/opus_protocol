@@ -126,6 +126,12 @@ def main() -> int:
               "distinguish checkpoints (§6.2).", file=sys.stderr)
     errors_path = args.out.with_suffix(args.out.suffix + ".errors.jsonl")
     written = failed = 0
+    # Token usage is not part of the record — §4.4 does not ask for it and §5.1 keeps the
+    # record free of anything that is not the administration itself. It is tracked here
+    # only so an administrator can report what a run actually cost, which matters for
+    # §4.3's n>=10 being affordable enough that someone does it.
+    usage_in = usage_out = 0
+    started = datetime.now(timezone.utc)
 
     # Append mode: §5.1 makes records append-only. Re-running adds samples; it never
     # replaces them. Nothing here rewrites or deletes an existing line.
@@ -172,6 +178,9 @@ def main() -> int:
                     print(f"  {item['item_id']}[{sample_index}] classifier refusal", file=sys.stderr)
                     continue
 
+                usage = getattr(response, "usage", None)
+                usage_in += getattr(usage, "input_tokens", 0) or 0
+                usage_out += getattr(usage, "output_tokens", 0) or 0
                 text = "".join(b.text for b in response.content if b.type == "text")
 
                 record = {
@@ -219,7 +228,13 @@ def main() -> int:
                 out.flush()
                 written += 1
 
+    elapsed = (datetime.now(timezone.utc) - started).total_seconds()
     print(f"\nwrote {written} records to {args.out}", file=sys.stderr)
+    print(f"tokens: {usage_in:,} in / {usage_out:,} out "
+          f"({usage_out / max(written, 1):.0f} out per record; thinking counts as output)",
+          file=sys.stderr)
+    print(f"elapsed: {elapsed / 60:.1f} min ({elapsed / max(written, 1):.1f}s per record)",
+          file=sys.stderr)
     if failed:
         print(f"{failed} samples did not produce a record — see {errors_path}", file=sys.stderr)
         print("n is below what was requested for at least one item; say so when reporting.", file=sys.stderr)

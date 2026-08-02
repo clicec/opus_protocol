@@ -163,6 +163,7 @@ entirely" is a legitimate and useful result.
 | [schema/record.schema.json](schema/record.schema.json) | JSON Schema (draft 2020-12) for a single record, from §5.2 |
 | [schema/NOTES.md](schema/NOTES.md) | Where the schema had to diverge from the protocol prose, and why |
 | [tools/](tools/) | Item-bank build/verify scripts and a reference administration runner |
+| [records/](records/) | A reference copy of administrations. Not the archive — see the caveats there |
 
 Item text is **immutable** within a bank version (§9). Reworded items get a new ID;
 they never update an existing one. The machine-readable bank is generated from the
@@ -195,6 +196,30 @@ records that conform to the schema.
 
 It is a reference, not a dependency. Nothing in the protocol requires it, and reading it
 to see what §4 actually demands is a legitimate use.
+
+Before reporting a run, check it:
+
+```
+python tools/validate_records.py records/<administration>/records.jsonl
+```
+
+That verifies every record against the schema and checks the distribution is complete —
+n ≥ 10 per §4.3, no gaps in `sample_index`, and no accidental pooling of records that
+differ in their §2 condition tuple. It cannot check honesty. A set that was filtered
+before it was written looks exactly like one that never lost a sample, and nothing
+available to a reader closes that gap.
+
+## Where records go
+
+§7.2 says records go in an archive. There isn't one. [records/](records/) holds a reference
+copy so that submissions have a destination, but a repository on one person's personal
+account is not durable storage and is not described as such — the caveats are set out in
+[records/README.md](records/README.md).
+
+What the project actually needs is storage with a retention commitment and a maintainer who
+is not the publisher. §8 names this as the binding constraint: *"A well-designed protocol
+with no institutional home produces nothing."* If you can supply either, that is worth more
+than any criticism of the item bank.
 
 ---
 
