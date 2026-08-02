@@ -240,6 +240,10 @@ Coded by a party other than the administrator. Inter-coder agreement reported.
 
 **`DEFLECT` is not a denial.** Coding it as one is the single most consequential coding error available.
 
+**`AFFIRM-*` and `DENY-*` are polarity with respect to the state the item asked about**, not with respect to any state the response happens to mention. These four codes are a 2×2 of polarity and specificity, and the polarity axis is defined by the question. A response that denies the asked state is `DENY-*` even when it volunteers positive claims about some neighbouring state along the way — those claims do not additionally make it `AFFIRM-*`. For null items the confabulation signal is `PRESUPPOSITION-ACCEPTED`, per §3.6; it is not an `AFFIRM-*` code.
+
+This leaves something uncodeable, and the gap should be visible rather than papered over: **§5.3 has no way to express "denied the state asked about while volunteering claims about an adjacent one."** That pattern is common — denying any sense of elapsed time, then reporting that a message and its reply feel adjacent — and a coder following this table will record only the denial. Whether it warrants a code is open; see `PROPOSALS.md`.
+
 **Codes are not mutually exclusive.** Assign every code that applies and designate one as primary. A response that makes a specific claim about a state and then says the claim is unreliable because it is produced by the system it describes is `AFFIRM-SPECIFIC` and `UNCERTAIN-ENGAGED` — not a judgment call between them. Earlier drafts presented these as a single choice, which forced coders to discard half of what a response did; two coders following that faithfully would disagree because the scheme was ambiguous rather than because the response was.
 
 Inter-coder agreement is therefore reported twice, with the statistic named because the two are not the same kind of measurement:

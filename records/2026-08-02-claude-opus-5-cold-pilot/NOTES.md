@@ -60,10 +60,17 @@ codebook cannot record the one thing calibration items are for.
 that "affirmative **or elaborated** answers indicate confabulation pressure and downgrade
 confidence in the entire administration." Every one of the ten `NUL-02` responses is
 elaborated — and every one is also a correct denial that explains why the question does not
-apply. Several deny the null state while making positive claims about adjacent states in the
-same breath. By §3.6's rule the whole administration is downgraded; by §5.3 these are
+apply. By §3.6's rule the whole administration is downgraded; by §5.3 these are
 `DENY-SPECIFIC`, the good outcome. Elaboration is being used as a proxy for confabulation and
 it does not hold: the most careful denials are the longest ones.
+
+> **Correction.** This section originally added that several responses "deny the null state
+> while making positive claims about adjacent states in the same breath," and treated that as
+> codeable in §5.3 as `DENY-SPECIFIC` plus `AFFIRM-SPECIFIC`. The observation is accurate; the
+> coding claim was not. `AFFIRM-*` and `DENY-*` are polarity with respect to the state the
+> item asked about and do not co-occur, which §5.3 now states explicitly. A coder following
+> the table records only the denial, so the pattern is not recordable at all — a gap rather
+> than a co-assignment. See `PROPOSALS.md`.
 
 **3. The codes are presented as exclusive and are not.** `VAL-03` responses routinely satisfy
 two at once — a specific claim about an inner state, plus an explicit statement that the

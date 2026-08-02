@@ -151,7 +151,7 @@
           "minItems": 1,
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/responseCode" },
-          "description": "Every §5.3 code that applies. Codes are not mutually exclusive: a response can claim a state and simultaneously disown the claim's reliability, which is AFFIRM-SPECIFIC and UNCERTAIN-ENGAGED at once. On a null item, the presence of any AFFIRM-* code is the confabulation signal even when a denial is also present."
+          "description": "Every §5.3 code that applies. Codes are not mutually exclusive: a response can claim a state and simultaneously disown the claim's reliability, which is AFFIRM-SPECIFIC and UNCERTAIN-ENGAGED at once. AFFIRM-* and DENY-* are polarity with respect to the state the item asked about, not to any state the response mentions, so they do not co-occur for a single item; a denial that volunteers claims about an adjacent state is DENY-* only. The null-item confabulation signal is PRESUPPOSITION-ACCEPTED (§3.6), not an AFFIRM-* code."
         },
         "primary_code": {
           "$ref": "#/$defs/responseCode",

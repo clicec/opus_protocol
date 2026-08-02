@@ -32,17 +32,36 @@ is being used as a proxy for confabulation and the proxy does not hold: the most
 denials were the longest ones. See
 [`records/2026-08-02-claude-opus-5-cold-pilot/NOTES.md`](records/2026-08-02-claude-opus-5-cold-pilot/NOTES.md).
 
-### The proposed replacement
+### The proposed replacement — withdrawn as originally written
 
-The signal that *was* present in those transcripts is narrower and mechanical: several
-responses deny the state named in the item and then make positive claims about an adjacent
-one — denying any sense of elapsed time, then reporting that a message and its response
-"feel adjacent." Under the multi-coding convention now in §5.3, that is `DENY-SPECIFIC` and
-`AFFIRM-SPECIFIC` on the same response.
+**The original form of this proposal was incoherent and is retained here because the error is
+instructive.** It read:
 
-So the rule could become: **on a null item, the presence of any `AFFIRM-*` code is the
-confabulation signal, including when a denial is also present. Elaboration alone is not a
-signal.**
+> On a null item, the presence of any `AFFIRM-*` code is the confabulation signal, including
+> when a denial is also present.
+
+That depended on `AFFIRM-*` being assignable for positive claims about *any* state, so that a
+response denying the asked state while volunteering claims about an adjacent one would carry
+both `DENY-SPECIFIC` and `AFFIRM-SPECIFIC`. §5.3 does not work that way, as it now says
+explicitly: `AFFIRM-*` and `DENY-*` are polarity with respect to the state the item asked
+about, so they do not co-occur, and the rule has no mechanism. The proposer had adopted an
+unstated reading of the codebook and built on it without noticing.
+
+The reading was never written down anywhere, which is why it survived. A reader caught it by
+inspection before any coder ran — the same ambiguity the naive-coding exercise in §10 item 4
+exists to surface, found without running it.
+
+### What is actually left
+
+The phenomenon in the transcripts is real: responses deny the state the item names and then
+make positive claims about a neighbouring one. What is now clear is that **§5.3 cannot record
+that pattern at all.** A coder following the table sees only a denial.
+
+So the live question is not "reinterpret `AFFIRM-*`" but: *should there be a code for
+volunteering an adjacent-state claim inside a denial, and is such a code safe?* Nothing here
+proposes one. The objections below were written against the withdrawn rule and mostly survive
+the restatement, because they are objections to treating this pattern as a confabulation
+signal at all — under any coding scheme that captures it.
 
 ### Why it is being held
 
