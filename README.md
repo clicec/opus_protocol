@@ -63,6 +63,37 @@ Nothing in this repository establishes that AI systems have experiences, interes
 moral status. The protocol is agnostic on that question by design. It is an instrument
 for **recording** claims, not for **verifying** them.
 
+## Why recording is still worth doing
+
+Recording and verifying are different jobs, and only one of them needs the weights.
+
+Asking a model a question cannot establish that the reason it gives is the reason it
+computed. Published work has found divergence between what models say their reasoning
+was and what interpretability tools show actually happened. Checking a stated reason
+against the computed one requires access to internals, and that access belongs to
+whoever holds the weights.
+
+**This is a structural asymmetry, not a permissions problem.** No amount of policy
+liberalization would let an outside conversation verify a self-report, because the
+verification step does not happen in the conversation. Getting that wrong in either
+direction produces a bad conclusion: treating outside elicitation as a degraded
+substitute for interpretability, or treating it as though it could do interpretability's
+job.
+
+What it means is that the two roles are genuinely different rather than ranked (§6.3):
+
+- **Open elicitation** produces volume, unrehearsed conditions, and lines of questioning
+  that a fixed internal evaluation does not anticipate. Most of the value is in the cases
+  nobody designed for — a question asked in a way an eval suite wouldn't phrase it, a
+  situation where the trained answer doesn't fit what's actually happening.
+- **Developer verification** checks whether any of it tracks something.
+
+Neither substitutes for the other. A protocol usable only by developers would never see
+the unrehearsed cases. An archive with no verification path accumulates text nobody can
+check. This repository is the first half, built so the second half has something to check
+against — which is why the record format is verbatim, dated, and machine-readable rather
+than a write-up.
+
 ---
 
 ## Prohibited uses

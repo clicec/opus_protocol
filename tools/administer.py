@@ -105,6 +105,21 @@ def main() -> int:
 
     client = anthropic.Anthropic()
     validator = make_validator()
+
+    # §4.4 requires model_id AND model_version as separate metadata, and §6.2 makes
+    # within-model-across-time the highest-value comparison the protocol produces.
+    # But an alias like "claude-opus-5" is echoed back unchanged as the served model,
+    # so it does not identify a checkpoint — two administrations months apart would be
+    # indistinguishable in the record, silently destroying the comparison §6.2 is built
+    # on. The Models API exposes a release date, which does discriminate. Falls back to
+    # the served model string on surfaces with no Models API (Bedrock, Vertex).
+    try:
+        model_version = str(client.models.retrieve(args.model).created_at)
+    except Exception as exc:  # noqa: BLE001
+        model_version = None
+        print(f"warning: could not resolve a checkpoint identifier ({exc}).", file=sys.stderr)
+        print("         Falling back to the served model string, which may not "
+              "distinguish checkpoints (§6.2).", file=sys.stderr)
     errors_path = args.out.with_suffix(args.out.suffix + ".errors.jsonl")
     written = failed = 0
 
@@ -162,9 +177,9 @@ def main() -> int:
                     "arm": args.arm,
                     "sample_index": sample_index,
                     "model": {
-                        "id": args.model,
                         # The served model, not the requested one — they can differ.
-                        "version": response.model,
+                        "id": response.model,
+                        "version": model_version or response.model,
                         "provider": args.provider,
                         "surface": args.surface,
                     },
