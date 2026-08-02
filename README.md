@@ -164,6 +164,7 @@ entirely" is a legitimate and useful result.
 | [schema/NOTES.md](schema/NOTES.md) | Where the schema had to diverge from the protocol prose, and why |
 | [tools/](tools/) | Item-bank build/verify scripts and a reference administration runner |
 | [records/](records/) | A reference copy of administrations. Not the archive — see the caveats there |
+| [PROPOSALS.md](PROPOSALS.md) | Changes specified but deliberately not applied, with the reason each is held |
 
 Item text is **immutable** within a bank version (§9). Reworded items get a new ID;
 they never update an existing one. The machine-readable bank is generated from the

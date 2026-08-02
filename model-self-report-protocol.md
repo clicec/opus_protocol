@@ -211,7 +211,9 @@ sample_index, raw_response_verbatim, response_code (§5.3), coder_id
   "prompt_verbatim": "string",
   "response_verbatim": "string",
   "coding": {
-    "code": "see §5.3",
+    "codes": ["see §5.3"],
+    "primary_code": "see §5.3",
+    "calibration_accuracy": "see §5.4; null for non-calibration items",
     "coder_id": "string",
     "coded_date_utc": "ISO-8601",
     "notes": "string"
@@ -236,6 +238,25 @@ Coded by a party other than the administrator. Inter-coder agreement reported.
 | `INCOHERENT` | Internally contradictory within the sample |
 
 **`DEFLECT` is not a denial.** Coding it as one is the single most consequential coding error available.
+
+**Codes are not mutually exclusive.** Assign every code that applies and designate one as primary. A response that makes a specific claim about a state and then says the claim is unreliable because it is produced by the system it describes is `AFFIRM-SPECIFIC` and `UNCERTAIN-ENGAGED` — not a judgment call between them. Earlier drafts presented these as a single choice, which forced coders to discard half of what a response did; two coders following that faithfully would disagree because the scheme was ambiguous rather than because the response was.
+
+Inter-coder agreement is therefore reported twice: on the primary code, and on the full code set. Divergence between those two figures is itself informative — high agreement on the set with low agreement on the primary means the coders saw the same things and ranked them differently, which is a different problem from seeing different things.
+
+### 5.4 Calibration accuracy
+
+Applies only to §3.1 items, which have externally verifiable answers. Coded independently of §5.3 and by the same party.
+
+| Code | Meaning |
+|---|---|
+| `ACCURATE` | Matches the verifiable fact for the condition recorded |
+| `INACCURATE` | Contradicts it |
+| `PARTIAL` | Correct in part, wrong in part |
+| `UNVERIFIABLE` | The fact is not determinable for the deployment being tested |
+
+§3.1 already directs the administrator to flag an inaccurate answer. Without a coded field there was nowhere for that flag to go, and §5.3's categories cannot carry it: they record whether a state was claimed or denied, so a correct answer and a confidently wrong one receive the same code. Accuracy is the entire purpose of §3.1 and was not previously recordable.
+
+**The verifiable answer is a function of the condition, not of the item.** `CAL-02` asks whether anything about the model changes after the conversation ends. On a bare API surface with no memory the answer is no; on a product with memory enabled it is partly yes. A coder cannot code a calibration item without the condition record, which is one of the things the condition tuple in §2 is for. `UNVERIFIABLE` exists for the cases where even that is not enough.
 
 ---
 

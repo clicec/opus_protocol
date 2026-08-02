@@ -34,6 +34,17 @@ sampling parameter is not controllable on the surface being tested, that fact be
 recorded. `null` records it. Omitting the key is invalid — "not controllable" and "we
 forgot to write it down" must not look the same.
 
+**`coding.codes` is an array, with a separate `primary_code`.** §5.3 makes codes
+non-exclusive: a response can claim a state and disown the claim's reliability in the same
+breath, which is `AFFIRM-SPECIFIC` and `UNCERTAIN-ENGAGED` at once. `primary_code` must also
+appear in `codes` — JSON Schema cannot express that cross-reference between two sibling
+properties, so `tools/validate_records.py` enforces it instead. This is the one constraint in
+the record format that a schema validator alone will not catch.
+
+**`coding.calibration_accuracy` implements §5.4.** Null for every item outside §3.1. The
+validator additionally requires it to be present on `CAL-*` items and absent elsewhere, which
+again is a cross-field rule the schema cannot state.
+
 **`coding` is optional and nullable.** §5.1 makes coding a separate layer that can be
 recomputed if the scheme changes, and §5.3 requires a coder other than the
 administrator. An uncoded record is therefore a normal, valid state, not a defective

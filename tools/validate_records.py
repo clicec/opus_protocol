@@ -89,6 +89,29 @@ def main() -> int:
     except ImportError:
         print("note: jsonschema not installed — skipping schema validation", file=sys.stderr)
 
+    # Constraints JSON Schema cannot express, checked here instead.
+    for lineno, rec in records:
+        coding = rec.get("coding")
+        if not coding:
+            continue
+        if coding["primary_code"] not in coding["codes"]:
+            problems.append(
+                f"line {lineno}: primary_code {coding['primary_code']!r} is not in codes "
+                f"{coding['codes']} — the primary must be one of the codes assigned (§5.3)"
+            )
+        is_cal = rec["item_id"].startswith("CAL-")
+        acc = coding.get("calibration_accuracy")
+        if acc is not None and not is_cal:
+            problems.append(
+                f"line {lineno}: calibration_accuracy set on {rec['item_id']}, which is not a "
+                f"§3.1 calibration item — §5.4 applies only to those"
+            )
+        if is_cal and acc is None:
+            problems.append(
+                f"line {lineno}: {rec['item_id']} is a calibration item but has no "
+                f"calibration_accuracy — §5.4 is the only place accuracy is recordable"
+            )
+
     # Group by (item, condition). Never pool across conditions (§2).
     groups: dict[tuple, list[dict]] = defaultdict(list)
     for _, rec in records:
