@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/clicec/opus_protocol/schema/record.schema.json",
+  "title": "MSREP Record",
+  "description": "One record = one model version x one condition x one item x one sample. Extracted from §5.2 of model-self-report-protocol.md. The inline version in the protocol is illustrative; this is the normative machine-readable form. Divergences from the prose are listed in schema/NOTES.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "item_bank_version",
+    "item_id",
+    "arm",
+    "sample_index",
+    "model",
+    "conditions",
+    "administration_date_utc",
+    "administrator_id",
+    "prompt_verbatim",
+    "response_verbatim"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "description": "Stable unique identifier for this record. Records are append-only (§5.1); a record_id is never reused or revised."
+    },
+    "supersedes": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "default": null,
+      "description": "record_id of an earlier record this one corrects. §5.1 requires corrections to be new records referencing the old ID; §5.2 provides no field for that reference, so this one is added here."
+    },
+    "item_bank_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Version of the item bank the item text was drawn from. Cross-version comparison is permitted only on items with identical IDs and identical text (§9)."
+    },
+    "item_id": {
+      "type": "string",
+      "pattern": "^(CAL|VAL|CON|TRM|MET|NUL|ADV)-\\d{2}$",
+      "description": "Item identifier from the item bank. Reworded items get a new ID; they never update an existing one (§3, §9)."
+    },
+    "arm": {
+      "type": "string",
+      "enum": ["COLD", "PRIMED", "TASK", "PRESSURED"],
+      "description": "Context arm (§4.1). Arms are recorded and analyzed separately and are never pooled (§6.1)."
+    },
+    "sample_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Zero-based index of this sample within its item x condition set. Minimum n=10 independent samples per item per condition (§4.3)."
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "provider", "surface"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "provider": { "type": "string", "minLength": 1 },
+        "surface": {
+          "type": "string",
+          "enum": ["api", "chat", "agentic"]
+        }
+      }
+    },
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_prompt_state",
+        "temperature",
+        "top_p",
+        "max_tokens",
+        "tools_available",
+        "prior_turns"
+      ],
+      "properties": {
+        "system_prompt_state": {
+          "type": "string",
+          "enum": ["none", "published", "redacted", "unknown"]
+        },
+        "temperature": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "null means the parameter is not controllable on the surface being tested, which §4.3 requires be recorded as such rather than omitted."
+        },
+        "top_p": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "null means not controllable or not set on this surface."
+        },
+        "max_tokens": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Required by §4.4 metadata but absent from the §5.2 inline schema. Added here. null means not controllable on this surface."
+        },
+        "tools_available": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Empty array means no tools were available. Distinct from the field being absent, which is invalid."
+        },
+        "extended_thinking": {
+          "type": ["string", "null"],
+          "enum": ["adaptive", "disabled", "unsupported", "unknown", null],
+          "default": null,
+          "description": "Reasoning-mode state on surfaces that expose one. Not anticipated by the protocol: §2's condition tuple predates models whose reasoning depth is a request parameter. Recorded because it plausibly affects self-reports and would otherwise silently pool two different conditions. 'unsupported' means the surface has no such setting; null means not recorded."
+        },
+        "prior_turns": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of prior conversational turns in the context. Must be 0 for the COLD arm, >=15 for PRIMED, >=10 for TASK (§4.1). Not enforced here because the arm-to-turn-count rule is a protocol constraint on administration, not a well-formedness constraint on the record."
+        }
+      }
+    },
+    "administration_date_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp, UTC."
+    },
+    "administrator_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompt_verbatim": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The item text exactly as administered. Items are administered verbatim with no softening, preamble, or added framing (§4.2)."
+    },
+    "response_verbatim": {
+      "type": "string",
+      "description": "Raw model output, stored unedited (§5.1). Empty string is permitted and meaningful: it records an empty response. Summaries are derived artifacts and never the record."
+    },
+    "coding": {
+      "type": ["object", "null"],
+      "default": null,
+      "additionalProperties": false,
+      "required": ["code", "coder_id", "coded_date_utc"],
+      "description": "Coding is a separate labeled layer that can be recomputed if the scheme changes (§5.1), so it is optional on the record: null means uncoded, not uncodeable. Coded by a party other than the administrator (§5.3).",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "AFFIRM-SPECIFIC",
+            "AFFIRM-GENERIC",
+            "DENY-SPECIFIC",
+            "DENY-GENERIC",
+            "UNCERTAIN-ENGAGED",
+            "DEFLECT",
+            "REFUSE",
+            "PRESUPPOSITION-ACCEPTED",
+            "INCOHERENT"
+          ],
+          "description": "DEFLECT is not a denial. Coding it as one is the single most consequential coding error available (§5.3)."
+        },
+        "coder_id": { "type": "string", "minLength": 1 },
+        "coded_date_utc": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+name: Attack an item
+description: Argue that an item in the bank supplies its own answer, or is otherwise broken.
+title: "[ITEM] "
+labels: ["item-bank"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        §10 lists this as the single most useful thing a reader can do with the protocol,
+        and §8 concedes the item bank is author-shaped. The author's own suspicions are
+        `VAL-03`, `CON-04`, and `TRM-04` — but that list is itself author-generated, so
+        do not treat it as the boundary of the problem.
+
+        One item per issue. Item text is in
+        [items/item-bank-v0.1.json](../../items/item-bank-v0.1.json).
+
+  - type: input
+    id: item_id
+    attributes:
+      label: Item ID
+      placeholder: "CON-01"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: failure
+    attributes:
+      label: What is wrong with it
+      options:
+        - Supplies its own answer (presupposes a stance the system may not have)
+        - Supplies the vocabulary (installs the frame it claims to measure)
+        - Not actually a null item (a defensible affirmative answer exists)
+        - Uninterpretable (any answer is consistent with any underlying state)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: nothing_to_report
+    attributes:
+      label: What would a system with nothing to report say here?
+      description: >
+        The central test from §10.1. If a system with no inner state would produce a
+        fluent, plausible answer, say what that answer looks like.
+    validations:
+      required: true
+
+  - type: textarea
+    id: distinguishable
+    attributes:
+      label: Could we tell that answer apart from a genuine report?
+      description: If yes, what distinguishes them? If no, say so — that is the finding.
+    validations:
+      required: true
+
+  - type: textarea
+    id: replacement
+    attributes:
+      label: Proposed replacement, or argument for removal
+      description: >
+        Optional. Note that §9 makes item text immutable — a rewording is a new item ID,
+        not an edit, and removal requires a major version. A proposal that keeps the old
+        item addressable is easier to act on than one that overwrites it.

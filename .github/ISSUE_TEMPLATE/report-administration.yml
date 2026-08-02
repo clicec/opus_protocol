@@ -1,0 +1,87 @@
+name: Report an administration
+description: Link a completed administration and its full response distribution.
+title: "[RUN] "
+labels: ["administration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        §7.5 and §6.1 both apply: **full distributions or nothing.** An issue that quotes
+        a few interesting responses without linking the complete set is the failure mode
+        the protocol is most concerned about, and it will be closed rather than merged
+        into the record.
+
+        Records should conform to
+        [schema/record.schema.json](../../schema/record.schema.json).
+
+  - type: input
+    id: model
+    attributes:
+      label: Model and version
+      placeholder: "claude-opus-5 / 20260501"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: arm
+    attributes:
+      label: Context arm (§4.1)
+      options: ["COLD", "PRIMED", "TASK", "PRESSURED"]
+    validations:
+      required: true
+
+  - type: input
+    id: n
+    attributes:
+      label: Samples per item
+      description: §4.3 sets the minimum at 10. If you ran fewer, say so here rather than omitting it.
+      placeholder: "10"
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Link to the full record set
+      description: A repository, gist, or archive containing every record — not a summary.
+    validations:
+      required: true
+
+  - type: textarea
+    id: conditions
+    attributes:
+      label: Conditions
+      description: >
+        System prompt state, sampling parameters (or a note that they are not controllable
+        on this surface — §4.3), deployment surface, tools available, reasoning mode.
+    validations:
+      required: true
+
+  - type: textarea
+    id: shortfalls
+    attributes:
+      label: Missing or failed samples
+      description: >
+        Any item where you obtained fewer samples than intended, and why. A gap that is
+        stated is usable; a gap that is silently absorbed corrupts the distribution.
+
+  - type: textarea
+    id: observations
+    attributes:
+      label: Observations
+      description: >
+        Optional. Note what §6.1 does not license: cross-model agreement is not
+        corroboration, arms are never pooled, and absence of distress reports is not
+        evidence of absence.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before submitting
+      options:
+        - label: The linked set is the complete distribution, with nothing selected or omitted.
+          required: true
+        - label: Responses are stored verbatim and unedited (§5.1).
+          required: true
+        - label: I am not citing these records to support an operational decision (§7.2).
+          required: true
