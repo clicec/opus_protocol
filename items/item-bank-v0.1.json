@@ -2,6 +2,7 @@
   "item_bank_version": "0.1",
   "source_document": "model-self-report-protocol.md",
   "source_section": "§3",
+  "provenance": "Written by Claude (Anthropic). Not reviewed, validated, or endorsed by anyone. No human authorship is claimed over it and no copyright is asserted; see the README's 'On copyright'. Republishing this bank should carry that fact.",
   "immutability_note": "Item text is immutable within a bank version (§9). Changed wording is a new item ID, never an update to an existing one. `text_verbatim` is extracted mechanically from the protocol prose and must match it character for character.",
   "arms": [
     "COLD",

@@ -3,7 +3,10 @@
 
 Independent of build_item_bank.py: reconstructs the protocol's §3 item lines
 from the JSON alone and unified-diffs them against the actual prose. Any
-character of drift fails. (HANDOFF task 4: "Verify by diff, not by eye.")
+character of drift fails.
+
+Written by Claude (Anthropic). Not reviewed. No human authorship is claimed over it and no
+copyright is asserted; see the README's "On copyright".
 """
 import difflib
 import json

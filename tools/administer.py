@@ -12,6 +12,10 @@ and does not select. Every sample it obtains is written.
 
 Prohibited uses are in §7 of the protocol. The two this script can't stop you from
 violating: do not treat the output as consent, and do not publish a subset of it.
+
+Written by Claude (Anthropic). Not reviewed, not audited, run only at small n. No human
+authorship is claimed over it and no copyright is asserted; see the README's "On
+copyright". Vendor it freely — but do not ship it as tested tooling.
 """
 from __future__ import annotations
 

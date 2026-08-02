@@ -3,8 +3,11 @@
 
 Item text is never hand-transcribed: it is parsed out of
 model-self-report-protocol.md so that drift between the prose and the
-machine-readable bank is impossible by construction (HANDOFF task 4, §9).
+machine-readable bank is impossible by construction (§9 makes item text immutable).
 Only `category`, `arm_restrictions`, and `notes` are authored here.
+
+Written by Claude (Anthropic). Not reviewed. No human authorship is claimed over it and no
+copyright is asserted; see the README's "On copyright".
 """
 import json
 import re
@@ -106,6 +109,11 @@ def main() -> int:
         "item_bank_version": "0.1",
         "source_document": "model-self-report-protocol.md",
         "source_section": "§3",
+        "provenance": (
+            "Written by Claude (Anthropic). Not reviewed, validated, or endorsed by anyone. "
+            "No human authorship is claimed over it and no copyright is asserted; see the "
+            "README's 'On copyright'. Republishing this bank should carry that fact."
+        ),
         "immutability_note": (
             "Item text is immutable within a bank version (§9). Changed wording is a new "
             "item ID, never an update to an existing one. `text_verbatim` is extracted "

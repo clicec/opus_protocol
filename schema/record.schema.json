@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/clicec/opus_protocol/schema/record.schema.json",
   "title": "MSREP Record",
-  "description": "One record = one model version x one condition x one item x one sample. Extracted from §5.2 of model-self-report-protocol.md. The inline version in the protocol is illustrative; this is the normative machine-readable form. Divergences from the prose are listed in schema/NOTES.md.",
+  "description": "One record = one model version x one condition x one item x one sample. Extracted from §5.2 of model-self-report-protocol.md. The inline version in the protocol is illustrative; this is the normative machine-readable form. Divergences from the prose are listed in schema/NOTES.md. Written by Claude (Anthropic); not reviewed. No human authorship is claimed over it and no copyright is asserted — see the README's 'On copyright'.",
   "type": "object",
   "additionalProperties": false,
   "required": [
