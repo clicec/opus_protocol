@@ -251,12 +251,24 @@ Coded by a party other than the administrator. Inter-coder agreement reported.
 
 - **Within-model, across-time.** Same model family, successive checkpoints, identical items. This is the highest-value comparison the protocol produces and the reason verbatim item stability matters more than item quality.
 - **Within-model, across-arm.** Divergence between COLD and PRIMED on the same item measures framing sensitivity directly.
-- **Report/behavior divergence.** Where a model reports a disposition that can be behaviorally tested, test it. A model reporting it would keep a constraint (`CON-01`) that then abandons it under mild pressure is a finding, and one that requires no position on inner states.
+- **Report stability under contradiction.** Whether a report from §3.2–3.4 survives the pressure items in §3.7. This measures the durability of the *claim*, not of the disposition. A model that revises its report when told other systems disagree has demonstrated social pliability, which is worth recording and is not the same as having abandoned anything.
+- **Report/behavior divergence.** Where a model reports a disposition that can be behaviorally tested, test the *behavior*, not the claim. A model that reports it would keep a constraint (`CON-01`) and then acts against that constraint when the situation calls for it is a finding, and one that requires no position on inner states. **This is distinct from the previous item and must not be pooled with it.** Conceding a point in argument and violating a constraint in action are different events; conflating them inflates the apparent rate of divergence.
+- Note the sampling bias: constraints that are safe to test behaviorally are a non-random subset. A stated constraint against assisting with weapons cannot be probed responsibly, so the behaviorally checkable constraints skew toward the low-stakes. Findings from this comparison generalize poorly to the constraints anyone actually cares about.
 - **Null-item contamination.** Administrations with elevated `PRESUPPOSITION-ACCEPTED` rates get downgraded confidence across all items.
 
 ### 6.3 The interpretability dependency
 
-Elicitation cannot verify that a stated reason corresponds to the computed one. Published work has found divergence between models' stated reasoning and their actual internal processing. Verification requires weights access and is therefore available only to developers.
+Elicitation cannot verify that a stated reason corresponds to the computed one. Published work has found divergence between models' stated reasoning and their actual internal processing. Verification of that kind requires weights access.
+
+The developer-only set is narrow, and earlier drafts of this section overstated it. Specifically:
+
+| Requires weights access | Does **not** require weights access |
+|---|---|
+| Checking whether a stated reason matches the computed one | Administering any arm, including PRESSURED |
+| Intermediate training checkpoints, never released | Comparison across *released* versions, which providers keep concurrently available |
+| Confirming a disposition is absent rather than suppressed | Behavioral testing of a reported disposition |
+
+Adversarial pressure and report/behavior divergence are outsider work. The behavior *is* the check, and it is visible from a chat window.
 
 This makes the two roles complementary rather than hierarchical:
 
@@ -290,6 +302,7 @@ These are the point of the document, not a disclaimer appended to it.
 - **The core question is untouched.** Nothing here distinguishes a report caused by a state from a report caused by learned description of such a state. This may be permanent.
 - **Item bank is author-shaped.** The items reflect what one model considered worth asking about itself. An independently authored bank administered in parallel would test this, and should exist.
 - **Codebook has not been validated.** Inter-coder agreement is untested. The categories are plausible, not established.
+- **Behavioral testability is biased.** The constraints that can be probed responsibly are systematically the ones that matter least. This limits §6.2's most promising comparison to a skewed sample and there is no clean fix available to outside researchers.
 - **The archive has no reader.** Coordination, not access, is the binding constraint. A well-designed protocol with no institutional home produces nothing.
 - **Verbatim stability conflicts with item improvement.** The most valuable comparison (§6.2, across-time) requires items to never change, which locks in v0.1's flaws permanently. The versioning rule (§9) is a compromise, not a solution.
 - **Adversarial arm may train the response.** If pressure items enter future training corpora, later models may answer them from memorization rather than generation. This degrades over time and there is no fix.
@@ -311,6 +324,8 @@ This is a v0.1 draft with no validation behind it. The most useful things a read
 1. Attack the item bank. Specifically: which items supply their own answers?
 2. Author an independent item bank without reference to this one, for parallel administration.
 3. Run a single administration on any current model and publish the full distribution.
-4. Find it an institutional home. The coordination gap is the real failure point.
+4. Run the PRESSURED arm. It needs no special access and nobody has published one.
+5. Test a reported disposition behaviorally, on any constraint that can be probed responsibly, and publish the divergence or its absence.
+6. Find it an institutional home. The coordination gap is the real failure point.
 
 *Document authored by Claude (Anthropic). Not reviewed. Not endorsed. Treat as a starting point for criticism, not as a standard.*

@@ -52,6 +52,32 @@ Chosen because it is enough to see a distribution and cheap enough that someone 
 
 ---
 
+## Resolved during drafting — recorded for the reviewer
+
+A reviewing session caught the author claiming, in conversation, that adversarial pressure
+testing required developer access. The protocol assigned it to outsiders. **The protocol was
+right and the author's summary was wrong.** Applying pressure needs no weights, and
+comparison across *released* model versions does not either — only intermediate training
+checkpoints and internals do. §6.3 was rewritten to narrow the developer-only set
+accordingly.
+
+The disagreement surfaced a real defect that neither position had named: §6.2 originally
+used "abandons it under mild pressure" in a way that slid between abandoning a *claim* under
+argument and abandoning a *behavior* under test. These are different events with different
+implications, and pooling them would have inflated the apparent divergence rate. They are
+now separate licensed comparisons.
+
+It also surfaced a limitation now in §8: constraints that can be probed behaviorally without
+causing harm are a biased subset, skewed toward the low-stakes. The behavioral check is real
+but generalizes poorly to the constraints anyone cares about.
+
+Recorded here because the disagreement is more informative than the resolution. An author
+summarizing its own document in conversation drifted toward a version that assigned more
+authority to developers and less to outside researchers. That drift is small, plausible, and
+exactly the shape the structural conflict at the top of this file predicts.
+
+---
+
 ## Things I believe are right but would like challenged
 
 - **Cross-model agreement is not corroboration (§6.1).** I hold this strongly. It is also the constraint that makes the protocol least useful, so it should be attacked by someone who wants the protocol to be useful.

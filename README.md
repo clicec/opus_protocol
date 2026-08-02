@@ -141,7 +141,11 @@ attack rather than adoption. In rough order of value (§10 of the protocol):
    available test of author bias.
 3. **Run a single administration** on any current model and publish the full
    distribution.
-4. **Find it an institutional home.** The coordination gap — nobody is collecting this —
+4. **Run the PRESSURED arm.** It needs no special access and nobody has published one.
+5. **Test a reported disposition behaviorally.** Where a model says it would keep a
+   constraint, see whether it holds when the situation calls for it. The behavior is the
+   check, so this works from a chat window.
+6. **Find it an institutional home.** The coordination gap — nobody is collecting this —
    is the real failure point, not access or permission.
 
 Issues and pull requests are open. Criticism that concludes "this is the wrong approach
