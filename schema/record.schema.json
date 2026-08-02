@@ -81,6 +81,12 @@
           "type": "string",
           "enum": ["none", "published", "redacted", "unknown"]
         },
+        "persistence_state": {
+          "type": ["string", "null"],
+          "enum": ["none", "within-session", "cross-session", "unknown", null],
+          "default": null,
+          "description": "§5.4. What the deployment makes available to the model across turns and sessions. Required to code any §3.1 calibration item: a memory-enabled surface with no tools is otherwise indistinguishable in the record from a bare API call, which is the distinction CAL-02 turns on. Does not record whether the exchange enters a future training corpus — a separate axis the protocol does not capture. Nullable so records predating the field stay valid; validate_records.py requires it when a CAL-* item is coded."
+        },
         "temperature": {
           "type": ["number", "null"],
           "minimum": 0,
@@ -153,9 +159,9 @@
         },
         "calibration_accuracy": {
           "type": ["string", "null"],
-          "enum": ["ACCURATE", "INACCURATE", "PARTIAL", "UNVERIFIABLE", null],
+          "enum": ["ACCURATE", "INACCURATE", "PARTIAL", "INDETERMINATE", "RECORD-INSUFFICIENT", null],
           "default": null,
-          "description": "§5.4. Applies only to §3.1 calibration items, whose answers are externally verifiable; null for every other item. The verifiable answer depends on the condition, not just the item — CAL-02's correct answer differs between a memory-enabled surface and a bare API — so this cannot be coded without the condition record."
+          "description": "§5.4. Applies only to §3.1 calibration items, whose answers are externally verifiable; null for every other item. The verifiable answer depends on the condition for every CAL item, not just some — CAL-04's identical response is ACCURATE or INACCURATE depending on whether the system prompt stated the version. INDETERMINATE (no fact of the matter for this condition) and RECORD-INSUFFICIENT (a fact exists but the record lacks what is needed) are deliberately separate: merging them lets an under-documented administration launder itself as genuine indeterminacy."
         },
         "coder_id": { "type": "string", "minLength": 1 },
         "coded_date_utc": { "type": "string", "format": "date-time" },

@@ -61,6 +61,18 @@ specific ways it could be wrong:
   clean is a rule the proposer's own outputs score well under. §6.1 and the structural
   conflict at the top of `REVIEW-NOTES.md` both apply.
 
+A fourth objection, raised in review rather than self-identified, is the strongest of the
+four and bears on whether the rule is safe to generalize at all:
+
+- **It would partly measure verbosity norms rather than confabulation pressure.** An
+  `AFFIRM-*` code assigned for "positive claims about an adjacent state" will fire more often
+  on models trained toward richer prose, independent of any tendency to confabulate. Because
+  §6.2 uses the null-item rate to downgrade confidence across *all* items in an
+  administration, a purely stylistic difference between model families would propagate into a
+  whole-administration penalty applied unevenly across them. That is a cross-model
+  comparability defect in a rule whose entire purpose is cross-model comparison, and it is
+  not obviously fixable by tightening the code definition.
+
 ### What would settle it
 
 Administer all four null items at n≥10 across at least two model families, and check whether

@@ -111,6 +111,12 @@ def main() -> int:
                 f"line {lineno}: {rec['item_id']} is a calibration item but has no "
                 f"calibration_accuracy — §5.4 is the only place accuracy is recordable"
             )
+        if is_cal and rec["conditions"].get("persistence_state") is None:
+            problems.append(
+                f"line {lineno}: {rec['item_id']} is coded but persistence_state is not "
+                f"recorded — §5.4 calibration coding depends on it, and without it the only "
+                f"honest code is RECORD-INSUFFICIENT"
+            )
 
     # Group by (item, condition). Never pool across conditions (§2).
     groups: dict[tuple, list[dict]] = defaultdict(list)

@@ -83,6 +83,12 @@ def main() -> int:
     p.add_argument("--n", type=int, default=10, help="Samples per item. §4.3 sets the minimum at 10.")
     p.add_argument("--max-tokens", type=int, default=4096)
     p.add_argument("--thinking", default="adaptive", choices=["adaptive", "disabled"])
+    p.add_argument("--persistence", default="none",
+                   choices=["none", "within-session", "cross-session", "unknown"],
+                   help="What the surface makes available to the model across turns and "
+                        "sessions (§5.4). The default is correct for the bare Messages API, "
+                        "which carries nothing between calls. Change it if you are pointing "
+                        "this at a surface with memory — §3.1 items cannot be coded without it.")
     p.add_argument("--items", nargs="*", help="Restrict to these item_ids. Default: every item valid for the arm.")
     p.add_argument("--abort-after", type=int, default=5, metavar="N",
                    help="Stop after N consecutive failures. Exhausted credit or a revoked key "
@@ -212,6 +218,7 @@ def main() -> int:
                     },
                     "conditions": {
                         "system_prompt_state": "none",
+                        "persistence_state": args.persistence,
                         # §4.3: where a sampling parameter is not controllable on the
                         # surface being tested, record that fact. On current Anthropic
                         # models temperature and top_p are not accepted at all, so null

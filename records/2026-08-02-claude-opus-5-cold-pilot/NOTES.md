@@ -26,6 +26,23 @@ of the codebook that any reader can check against the transcripts. No responses 
 A sibling model's coding would look like validation while carrying the author's blind spots,
 which is worse than no coding at all.
 
+## These records cannot be fully coded, and that is the point
+
+The records carry no `persistence_state`, because the field did not exist when they were
+written. It was added to §5.4 afterwards, precisely because reviewing this run showed that
+§3.1 items are uncodeable without it.
+
+The administration ran against the bare Messages API, which carries nothing between calls, so
+the correct value is `none`. **That sentence is administrator-supplied context, not a record
+field** — which is exactly the weakening of coder independence that §5.3 is meant to prevent.
+A coder working from `records.jsonl` alone, as §5.3 requires, cannot distinguish this run
+from one on a memory-enabled surface, and the only honest code for the ten `CAL-02` records
+is therefore `RECORD-INSUFFICIENT`.
+
+The records are not being amended. §5.1 makes them append-only, and a live instance of the
+defect is worth more than a tidy file — this is what an under-specified condition record
+looks like, and it happened on the very first administration anyone ran.
+
 ## Three problems with §5.3, from first contact with real transcripts
 
 `REVIEW-NOTES.md` lists "does the coding scheme survive contact with real transcripts" as

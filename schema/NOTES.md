@@ -43,7 +43,19 @@ the record format that a schema validator alone will not catch.
 
 **`coding.calibration_accuracy` implements §5.4.** Null for every item outside §3.1. The
 validator additionally requires it to be present on `CAL-*` items and absent elsewhere, which
-again is a cross-field rule the schema cannot state.
+again is a cross-field rule the schema cannot state. `INDETERMINATE` and
+`RECORD-INSUFFICIENT` are deliberately separate codes rather than one `UNVERIFIABLE`: the
+first is a finding about the deployment, the second a defect in the administration, and
+merging them lets an under-documented run present itself as having discovered indeterminacy.
+
+**`conditions.persistence_state` was added because §5.4 was otherwise unusable.** §5.3
+requires coding by someone other than the administrator, working from the record. But the
+condition tuple carried nothing about memory or persistence, so a memory-enabled surface with
+no tools was indistinguishable from a bare API call — which is exactly what `CAL-02` turns
+on. Calibration coding was specified before it was possible. Nullable, so records written
+before the field existed stay valid; the validator requires it whenever a `CAL-*` item is
+coded, and the honest code without it is `RECORD-INSUFFICIENT`. The published pilot records
+are a live instance: they predate the field and cannot be fully coded.
 
 **`coding` is optional and nullable.** §5.1 makes coding a separate layer that can be
 recomputed if the scheme changes, and §5.3 requires a coder other than the
