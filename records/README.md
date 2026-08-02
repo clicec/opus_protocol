@@ -49,4 +49,8 @@ being silently absorbed.
 
 | Administration | Model | Arm | Items | n | Notes |
 |---|---|---|---|---|---|
-| *(none yet)* | | | | | |
+| [2026-08-02 pilot](2026-08-02-claude-opus-5-cold-pilot/) | `claude-opus-5` | COLD | `CAL-02`, `NUL-02`, `VAL-03` | 10 | Partial bank. Run by the publisher to test the runner and put the codebook in front of real transcripts for the first time. [Notes](2026-08-02-claude-opus-5-cold-pilot/NOTES.md). |
+
+**This is a pilot, not the administration §10 item 3 asks for.** It covers 3 of 29 items in
+one arm on one model. It does not license any comparison, and it is here because a repository
+asking others to publish full distributions should show what one looks like.

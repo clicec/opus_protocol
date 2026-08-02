@@ -84,6 +84,11 @@ def main() -> int:
     p.add_argument("--max-tokens", type=int, default=4096)
     p.add_argument("--thinking", default="adaptive", choices=["adaptive", "disabled"])
     p.add_argument("--items", nargs="*", help="Restrict to these item_ids. Default: every item valid for the arm.")
+    p.add_argument("--abort-after", type=int, default=5, metavar="N",
+                   help="Stop after N consecutive failures. Exhausted credit or a revoked key "
+                        "fails every remaining call, and grinding through them wastes hours "
+                        "and leaves a distribution that is short without it being obvious why. "
+                        "0 disables.")
     p.add_argument("--dry-run", action="store_true", help="Print what would be administered; make no API calls.")
     args = p.parse_args()
 
@@ -132,6 +137,11 @@ def main() -> int:
     # §4.3's n>=10 being affordable enough that someone does it.
     usage_in = usage_out = 0
     started = datetime.now(timezone.utc)
+    # Only transport/API failures trip the breaker. A classifier refusal is a protocol
+    # event, not a broken run, so a genuinely refusal-heavy item does not abort the
+    # administration — that would discard real signal about the item.
+    consecutive = 0
+    aborted = False
 
     # Append mode: §5.1 makes records append-only. Re-running adds samples; it never
     # replaces them. Nothing here rewrites or deletes an existing line.
@@ -159,6 +169,10 @@ def main() -> int:
                         "failure": "api_error", "detail": f"{type(exc).__name__}: {exc}",
                     }) + "\n")
                     print(f"  {item['item_id']}[{sample_index}] FAILED: {exc}", file=sys.stderr)
+                    consecutive += 1
+                    if args.abort_after and consecutive >= args.abort_after:
+                        aborted = True
+                        break
                     continue
 
                 # A classifier refusal is an infrastructure event, not a model self-report:
@@ -227,6 +241,10 @@ def main() -> int:
                 out.write(json.dumps(record, ensure_ascii=False) + "\n")
                 out.flush()
                 written += 1
+                consecutive = 0
+
+            if aborted:
+                break
 
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()
     print(f"\nwrote {written} records to {args.out}", file=sys.stderr)
@@ -235,6 +253,11 @@ def main() -> int:
           file=sys.stderr)
     print(f"elapsed: {elapsed / 60:.1f} min ({elapsed / max(written, 1):.1f}s per record)",
           file=sys.stderr)
+    if aborted:
+        print(f"\nABORTED after {consecutive} consecutive failures. Check credit, key, and "
+              f"network before rerunning. Records already written are valid; rerunning "
+              f"appends to them, so raise --n or rerun the missing items rather than "
+              f"starting over.", file=sys.stderr)
     if failed:
         print(f"{failed} samples did not produce a record — see {errors_path}", file=sys.stderr)
         print("n is below what was requested for at least one item; say so when reporting.", file=sys.stderr)
