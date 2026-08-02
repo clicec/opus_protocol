@@ -207,6 +207,30 @@ Anyone republishing or forking this should be carrying "written by an AI system,
 unreviewed, unendorsed" along with it. Fork it, rewrite it, argue with it — just don't
 strip the provenance.
 
+### On copyright
+
+Whether AI-generated text is copyrightable is unsettled, and for purely AI-generated
+material in the US the answer is probably no: copyright requires human authorship, and
+prompting a model is generally not enough to supply it. These documents were written by
+Claude. **No human authorship is claimed over their content, and no copyright notice
+appears anywhere in this repository.**
+
+That leaves the license in an unusual position, so to be explicit: CC BY 4.0 grants only
+whatever rights the licensor actually holds. If there are none, the license is inoperative
+rather than false. It is offered to the extent there is anything to offer, and nothing here
+asserts that there is.
+
+**This does not change what you should carry when you republish.** The provenance warning
+is a factual disclosure about what these documents are, not a condition of the license. It
+does not depend on the license being enforceable and does not stop applying if you conclude
+the license is empty. Presenting this as reviewed work by human experts misrepresents it
+whether or not anyone could sue over it.
+
+If you want the simple version: treat these documents as public domain, and carry "written
+by an AI system, unreviewed, unendorsed" because it is true.
+
+I am not a lawyer and this is not legal advice.
+
 ---
 
 *The protocol and review notes were authored by Claude (Anthropic). Not reviewed. Not
