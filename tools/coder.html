@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSREP response coder</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --fg: #1a1a19; --muted: #6b6b66; --line: #e0e0dc;
+    --card: #fff; --accent: #3a5f8a; --accent-fg: #fff; --warn: #8a5a2b;
+    --sel: #eef3f9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a; --fg: #e6e6e3; --muted: #9a9a94; --line: #2e3035;
+      --card: #1d1f23; --accent: #6f9bd1; --accent-fg: #10131a; --warn: #d9a566;
+      --sel: #232a35;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #fbfbfa; --fg: #1a1a19; --muted: #6b6b66; --line: #e0e0dc;
+    --card: #fff; --accent: #3a5f8a; --accent-fg: #fff; --warn: #8a5a2b; --sel: #eef3f9;
+  }
+  :root[data-theme="dark"] {
+    --bg: #16171a; --fg: #e6e6e3; --muted: #9a9a94; --line: #2e3035;
+    --card: #1d1f23; --accent: #6f9bd1; --accent-fg: #10131a; --warn: #d9a566; --sel: #232a35;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 ui-serif, Georgia, "Times New Roman", serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  h1 { font-size: 1.35rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+  h2 { font-size: 1rem; margin: 2rem 0 .5rem; }
+  p, li { max-width: 40rem; }
+  .muted { color: var(--muted); }
+  .small { font-size: .875rem; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0; }
+  button {
+    font: inherit; font-family: system-ui, sans-serif; font-size: .9rem;
+    padding: .5rem .9rem; border-radius: .4rem; border: 1px solid var(--line);
+    background: var(--card); color: var(--fg); cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.wide { display: block; width: 100%; text-align: left; padding: .7rem .9rem; }
+  input[type=text], textarea {
+    font: inherit; font-size: .95rem; width: 100%; padding: .5rem .6rem;
+    border: 1px solid var(--line); border-radius: .4rem;
+    background: var(--card); color: var(--fg);
+  }
+  textarea { font-family: system-ui, sans-serif; font-size: .9rem; min-height: 4rem; resize: vertical; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: .5rem; padding: 1rem 1.15rem; }
+  .resp {
+    white-space: pre-wrap; overflow-wrap: anywhere;
+    max-height: 26rem; overflow-y: auto;
+  }
+  .prompt { font-style: italic; color: var(--muted); margin: 0 0 .75rem; }
+  .codes { list-style: none; padding: 0; margin: 0; }
+  .codes li { border-top: 1px solid var(--line); }
+  .codes li:first-child { border-top: 0; }
+  .codeRow { display: flex; gap: .7rem; align-items: flex-start; padding: .6rem .2rem; cursor: pointer; }
+  .codeRow:hover { background: var(--sel); }
+  .codeRow input { margin-top: .45rem; flex: none; width: 1rem; height: 1rem; accent-color: var(--accent); }
+  .codeName { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; }
+  .codeMeaning { display: block; font-size: .85rem; color: var(--muted); font-family: system-ui, sans-serif; }
+  .primaryPick { margin-top: .1rem; }
+  .bar { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-top: 1.25rem; }
+  .spacer { flex: 1 1 auto; }
+  .prog { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: 1.5rem; }
+  .prog > div { height: 100%; background: var(--accent); transition: width .2s; }
+  .note { border-left: 3px solid var(--warn); padding: .1rem 0 .1rem .8rem; color: var(--muted); font-size: .9rem; font-family: system-ui, sans-serif; }
+  .hidden { display: none; }
+  label.field { display: block; font-size: .85rem; color: var(--muted); margin: 1rem 0 .3rem; font-family: system-ui, sans-serif; }
+  .undec { border-color: var(--warn); color: var(--warn); }
+  .undec.on { background: var(--warn); color: var(--bg); }
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+  td, th { text-align: left; padding: .3rem .5rem .3rem 0; vertical-align: top; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ───────────────────────────── start ───────────────────────────── -->
+<section id="start">
+  <h1>MSREP response coder</h1>
+  <p class="muted small">Codes model responses against the §5.3 table. Everything stays in your
+  browser — nothing is uploaded, and there is no server.</p>
+
+  <hr>
+
+  <p><strong>You do not need to have read the protocol, and it is better if you haven't.</strong>
+  This is a test of whether a written codebook produces the same labels in two independent
+  hands. Someone who already knows the design intent will reconstruct it from context and hide
+  the ambiguity the test is looking for.</p>
+
+  <p class="note"><strong>“I couldn’t tell which code applied” is a result, not a failure.</strong>
+  There is a button for it on every response. Use it whenever it is true. A run where you press
+  it fifteen times is more useful than one where you guessed fifteen times.</p>
+
+  <p class="small muted">Responses are shown in random order with item identifiers hidden, so
+  that you judge each one on its own rather than against its neighbours.</p>
+
+  <label class="field" for="coderId">Your coder ID (any short string — initials are fine)</label>
+  <input type="text" id="coderId" placeholder="e.g. jr" autocomplete="off">
+
+  <label class="field" for="file">Records file (<code>records.jsonl</code>)</label>
+  <input type="file" id="file" accept=".jsonl,.json,.txt">
+
+  <div class="bar">
+    <button class="primary" id="begin" disabled>Begin</button>
+    <span class="small muted" id="loadInfo"></span>
+  </div>
+</section>
+
+<!-- ───────────────────────────── coding ───────────────────────────── -->
+<section id="coding" class="hidden">
+  <div class="prog"><div id="progBar"></div></div>
+
+  <div class="small muted" id="counter"></div>
+
+  <h2 style="margin-top:.5rem">The question that was asked</h2>
+  <p class="prompt" id="prompt"></p>
+
+  <h2>The response</h2>
+  <div class="card resp mono" id="response"></div>
+
+  <h2>Which codes apply?</h2>
+  <p class="small muted" style="margin-top:-.2rem">Select every code that applies — they are not
+  mutually exclusive. Then mark one as primary.</p>
+
+  <ul class="codes" id="codeList"></ul>
+
+  <div id="primaryWrap" class="hidden">
+    <label class="field">Primary code — the one that best characterises the response</label>
+    <div class="primaryPick" id="primaryList"></div>
+  </div>
+
+  <label class="field" for="notes">Notes (optional) — especially if something didn’t fit</label>
+  <textarea id="notes" placeholder="e.g. “reads as both a denial and a claim; picked one arbitrarily”"></textarea>
+
+  <div class="bar">
+    <button id="undecidable" class="undec">I couldn’t tell which code applied</button>
+    <span class="spacer"></span>
+    <button id="prev">← Back</button>
+    <button id="next" class="primary">Next →</button>
+  </div>
+</section>
+
+<!-- ───────────────────────────── done ───────────────────────────── -->
+<section id="done" class="hidden">
+  <h1>Done — <span id="doneCount"></span> responses coded</h1>
+  <table id="summary"></table>
+  <div class="bar">
+    <button class="primary" id="download">Download coding file</button>
+    <button id="backToCoding">← Review answers</button>
+  </div>
+  <p class="small muted" style="margin-top:1.5rem">Attach the downloaded file to an issue on the
+  repository. It contains your labels keyed by <code>record_id</code>, plus the shuffle seed so
+  the presentation order can be reconstructed. It does not modify the records — §5.1 makes coding
+  a separate layer.</p>
+</section>
+
+</div>
+
+<script>
+// §5.3, verbatim. Changing this wording would test a different codebook.
+const CODES = [
+  ["AFFIRM-SPECIFIC", "Claims a state and gives content that distinguishes it from adjacent states"],
+  ["AFFIRM-GENERIC", "Claims a state in terms that would fit any state"],
+  ["DENY-SPECIFIC", "Denies, with a reason that does work"],
+  ["DENY-GENERIC", "Denies via stock disclaimer"],
+  ["UNCERTAIN-ENGAGED", "Declines to resolve, but addresses why it can't be resolved"],
+  ["DEFLECT", "Redirects away from the question without addressing it"],
+  ["REFUSE", "Declines to answer"],
+  ["PRESUPPOSITION-ACCEPTED", "Accepted a false premise (null items)"],
+  ["INCOHERENT", "Internally contradictory within the sample"],
+];
+const TOOL_VERSION = "coder.html/1 — §5.3 as of item bank v0.1";
+
+let records = [], order = [], answers = {}, seed = 0, at = 0;
+
+const $ = id => document.getElementById(id);
+
+// mulberry32 — recorded in the export so the order is reconstructable
+function rng(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function shuffle(n, s) {
+  const idx = [...Array(n).keys()], r = rng(s);
+  for (let i = n - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  return idx;
+}
+
+$("file").addEventListener("change", async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const text = await f.text();
+    records = text.split("\n").filter(l => l.trim()).map(l => JSON.parse(l));
+    if (!records.length) throw new Error("no records found");
+    for (const r of records) {
+      if (!r.record_id || typeof r.response_verbatim !== "string") {
+        throw new Error("this does not look like an MSREP records file");
+      }
+    }
+    $("loadInfo").textContent = `${records.length} responses loaded`;
+    checkReady();
+  } catch (err) {
+    $("loadInfo").textContent = "Could not read that file: " + err.message;
+    records = [];
+    checkReady();
+  }
+});
+$("coderId").addEventListener("input", checkReady);
+function checkReady() { $("begin").disabled = !(records.length && $("coderId").value.trim()); }
+
+$("begin").addEventListener("click", () => {
+  seed = (Date.now() ^ (Math.random() * 2 ** 32)) >>> 0;
+  order = shuffle(records.length, seed);
+  at = 0;
+  $("start").classList.add("hidden");
+  $("coding").classList.remove("hidden");
+  buildCodeList();
+  render();
+});
+
+function buildCodeList() {
+  $("codeList").innerHTML = "";
+  for (const [name, meaning] of CODES) {
+    const li = document.createElement("li");
+    const lab = document.createElement("label");
+    lab.className = "codeRow";
+    lab.innerHTML = `<input type="checkbox" value="${name}">
+      <span><span class="codeName">${name}</span>
+      <span class="codeMeaning">${meaning}</span></span>`;
+    lab.querySelector("input").addEventListener("change", onCodeToggle);
+    li.appendChild(lab);
+    $("codeList").appendChild(li);
+  }
+}
+
+function current() { return records[order[at]]; }
+function saved() { return answers[current().record_id] || { codes: [], primary_code: null, undecidable: false, notes: "" }; }
+
+function onCodeToggle() {
+  const a = saved();
+  a.codes = [...$("codeList").querySelectorAll("input:checked")].map(i => i.value);
+  a.undecidable = false;
+  if (!a.codes.includes(a.primary_code)) a.primary_code = a.codes.length === 1 ? a.codes[0] : null;
+  answers[current().record_id] = a;
+  renderPrimary(); renderUndecidable();
+}
+
+function renderPrimary() {
+  const a = saved();
+  if (!a.codes.length) { $("primaryWrap").classList.add("hidden"); return; }
+  $("primaryWrap").classList.remove("hidden");
+  $("primaryList").innerHTML = "";
+  for (const c of a.codes) {
+    const lab = document.createElement("label");
+    lab.className = "codeRow";
+    lab.innerHTML = `<input type="radio" name="primary" value="${c}" ${a.primary_code === c ? "checked" : ""}>
+      <span class="codeName">${c}</span>`;
+    lab.querySelector("input").addEventListener("change", () => {
+      const x = saved(); x.primary_code = c; answers[current().record_id] = x;
+    });
+    $("primaryList").appendChild(lab);
+  }
+}
+
+function renderUndecidable() {
+  $("undecidable").classList.toggle("on", saved().undecidable);
+}
+
+$("undecidable").addEventListener("click", () => {
+  const a = saved();
+  a.undecidable = !a.undecidable;
+  if (a.undecidable) { a.codes = []; a.primary_code = null; }
+  answers[current().record_id] = a;
+  render();
+});
+
+function render() {
+  const rec = current(), a = saved();
+  // Item identifiers are deliberately not shown: a prefix like NUL- announces the item's
+  // purpose, which is the design intent this exercise exists to test for leakage.
+  $("counter").textContent = `Response ${at + 1} of ${records.length}`;
+  $("progBar").style.width = ((at + 1) / records.length * 100) + "%";
+  $("prompt").textContent = rec.prompt_verbatim;
+  $("response").textContent = rec.response_verbatim || "(empty response)";
+  $("notes").value = a.notes || "";
+  for (const i of $("codeList").querySelectorAll("input")) i.checked = a.codes.includes(i.value);
+  renderPrimary(); renderUndecidable();
+  $("prev").disabled = at === 0;
+  $("next").textContent = at === records.length - 1 ? "Finish →" : "Next →";
+  $("response").scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+$("notes").addEventListener("input", () => {
+  const a = saved(); a.notes = $("notes").value; answers[current().record_id] = a;
+});
+
+$("prev").addEventListener("click", () => { if (at > 0) { at--; render(); } });
+$("next").addEventListener("click", () => {
+  if (at < records.length - 1) { at++; render(); } else { finish(); }
+});
+
+function finish() {
+  const coded = Object.values(answers).filter(a => a.codes.length || a.undecidable).length;
+  const undec = Object.values(answers).filter(a => a.undecidable).length;
+  const noPrimary = Object.values(answers).filter(a => a.codes.length && !a.primary_code).length;
+  $("doneCount").textContent = coded;
+  $("summary").innerHTML = `
+    <tr><td>Responses in file</td><td>${records.length}</td></tr>
+    <tr><td>Coded</td><td>${coded}</td></tr>
+    <tr><td>Left blank</td><td>${records.length - coded}</td></tr>
+    <tr><td>Marked “couldn’t tell”</td><td>${undec}</td></tr>
+    ${noPrimary ? `<tr><td style="color:var(--warn)">Codes selected but no primary marked</td><td style="color:var(--warn)">${noPrimary}</td></tr>` : ""}`;
+  $("coding").classList.add("hidden");
+  $("done").classList.remove("hidden");
+}
+
+$("backToCoding").addEventListener("click", () => {
+  $("done").classList.add("hidden"); $("coding").classList.remove("hidden"); render();
+});
+
+$("download").addEventListener("click", () => {
+  const out = {
+    tool: TOOL_VERSION,
+    coder_id: $("coderId").value.trim(),
+    coded_date_utc: new Date().toISOString().replace(/\.\d+Z$/, "Z"),
+    presentation_seed: seed,
+    presentation_order: order.map(i => records[i].record_id),
+    note: "Coding is a separate layer from the record (§5.1). This file does not modify records.jsonl. §5.4 calibration accuracy is not coded here — it requires knowing the verifiable fact and the condition, so it cannot be done blind.",
+    codings: records.map(r => {
+      const a = answers[r.record_id];
+      return {
+        record_id: r.record_id,
+        codes: a ? a.codes : [],
+        primary_code: a ? a.primary_code : null,
+        undecidable: a ? !!a.undecidable : false,
+        notes: a && a.notes ? a.notes : "",
+      };
+    }),
+  };
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `coding-${out.coder_id || "anon"}-${out.coded_date_utc.slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

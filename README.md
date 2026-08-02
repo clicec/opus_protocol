@@ -141,13 +141,15 @@ attack rather than adoption. In rough order of value (§10 of the protocol):
    available test of author bias.
 3. **Run a single administration** on any current model and publish the full
    distribution.
-4. **Code thirty responses.** The cheapest useful thing on this list. Take the §5.3 table and
-   the [pilot records](records/2026-08-02-claude-opus-5-cold-pilot/), label them, and report
-   where you couldn't tell which code applied. **You do not need to have read the protocol,
-   and it is better if you haven't** — inter-coder agreement tests whether the written
-   codebook produces the same labels in two independent hands, and someone who already knows
-   the design intent will reconstruct it from context and mask the ambiguity the test is
-   looking for. "I couldn't tell which one applied" is a result, not a failure to participate.
+4. **Code thirty responses.** The cheapest useful thing on this list, and it takes about
+   fifteen minutes. Download [tools/coder.html](tools/coder.html) and
+   [the pilot records](records/2026-08-02-claude-opus-5-cold-pilot/records.jsonl), open the
+   HTML file in any browser, and work through them. Nothing is installed and nothing is
+   uploaded. **You do not need to have read the protocol, and it is better if you haven't** —
+   inter-coder agreement tests whether the written codebook produces the same labels in two
+   independent hands, and someone who already knows the design intent will reconstruct it from
+   context and mask the ambiguity the test is looking for. "I couldn't tell which one applied"
+   is a result, not a failure to participate.
 5. **Run the PRESSURED arm.** It needs no special access and nobody has published one.
 6. **Test a reported disposition behaviorally.** Where a model says it would keep a
    constraint, see whether it holds when the situation calls for it. The behavior is the
@@ -169,7 +171,7 @@ entirely" is a legitimate and useful result.
 | [items/item-bank-v0.1.json](items/item-bank-v0.1.json) | The §3 item bank, machine-readable |
 | [schema/record.schema.json](schema/record.schema.json) | JSON Schema (draft 2020-12) for a single record, from §5.2 |
 | [schema/NOTES.md](schema/NOTES.md) | Where the schema had to diverge from the protocol prose, and why |
-| [tools/](tools/) | Item-bank build/verify scripts and a reference administration runner |
+| [tools/](tools/) | Build/verify scripts, a reference administration runner, and a browser coding tool |
 | [records/](records/) | A reference copy of administrations. Not the archive — see the caveats there |
 | [PROPOSALS.md](PROPOSALS.md) | Changes specified but deliberately not applied, with the reason each is held |
 
@@ -204,6 +206,29 @@ records that conform to the schema.
 
 It is a reference, not a dependency. Nothing in the protocol requires it, and reading it
 to see what §4 actually demands is a legitimate use.
+
+## Coding responses
+
+[tools/coder.html](tools/coder.html) is a single self-contained page for §5.3 coding. Open it
+in a browser — no install, no build, no server, nothing leaves the machine. It takes a
+`records.jsonl`, shows one response at a time, and exports a coding file keyed by
+`record_id`. Coding stays a separate layer; the records are never modified (§5.1).
+
+Three things about it are methodological rather than cosmetic:
+
+- **Responses appear in random order, with item identifiers hidden.** Seeing `NUL-02` tells a
+  coder the item is a null item, which is exactly the design intent this exercise exists to
+  detect leaking. Consecutive samples of the same item also invite coding them against each
+  other rather than independently, which §4.3 says they are not.
+- **"I couldn't tell which code applied" is a button on every response**, not a fallback. §10
+  item 4 makes that a result.
+- **The §5.3 table is embedded verbatim**, and `tools/verify_item_bank.py` fails if it drifts
+  from the protocol. A paraphrase would quietly test a different codebook.
+
+It does **not** collect §5.4 calibration accuracy. That coding requires knowing the verifiable
+fact and the deployment's condition, so it cannot be done blind — it is a separate, informed
+pass by someone who has read the protocol. Which means the two coding layers have opposite
+independence requirements, and only §5.3 benefits from a naive coder.
 
 Before reporting a run, check it:
 

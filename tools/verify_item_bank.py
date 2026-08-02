@@ -45,7 +45,30 @@ def reconstructed_lines() -> list[str]:
     return out
 
 
+def codebook_drift() -> list[str]:
+    """coder.html embeds the §5.3 table so a coder can work without the protocol.
+
+    A paraphrase there would silently test a different codebook than the one the
+    protocol defines, and the resulting agreement figure would measure the wrong thing.
+    """
+    tool = ROOT / "tools" / "coder.html"
+    if not tool.exists():
+        return []
+    sec = re.search(r"### 5\.3 Response coding(.*?)###", PROTOCOL.read_text(encoding="utf-8"), re.S)
+    prose = [f"{m.group(1)} | {m.group(2).strip()}"
+             for m in re.finditer(r"^\| `([A-Z-]+)` \| (.+?) \|$", sec.group(1), re.M)]
+    embedded = [f"{m.group(1)} | {m.group(2)}"
+                for m in re.finditer(r'\["([A-Z-]+)", "(.+?)"\],', tool.read_text(encoding="utf-8"))]
+    return list(difflib.unified_diff(prose, embedded, "protocol-§5.3", "coder.html", lineterm=""))
+
+
 def main() -> int:
+    drift = codebook_drift()
+    if drift:
+        print("FAIL — coder.html's §5.3 table has drifted from the protocol:")
+        print("\n".join(drift))
+        return 1
+
     actual, rebuilt = protocol_item_lines(), reconstructed_lines()
     diff = list(difflib.unified_diff(actual, rebuilt, "protocol-§3", "item-bank-json", lineterm=""))
     if diff:
