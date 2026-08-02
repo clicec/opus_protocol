@@ -265,10 +265,12 @@ The developer-only set is narrow, and earlier drafts of this section overstated 
 | Requires weights access | Does **not** require weights access |
 |---|---|
 | Checking whether a stated reason matches the computed one | Administering any arm, including PRESSURED |
-| Intermediate training checkpoints, never released | Comparison across *released* versions, which providers keep concurrently available |
+| Any checkpoint no longer served — intermediate training states, and released versions after retirement | Comparison across versions that are *currently* served |
 | Confirming a disposition is absent rather than suppressed | Behavioral testing of a reported disposition |
 
 Adversarial pressure and report/behavior divergence are outsider work. The behavior *is* the check, and it is visible from a chat window.
+
+Note that the right-hand column is not stable over time. Released versions are retired, and a retired checkpoint moves permanently into the left column: no outsider can query it again, and whether it could have been queried once makes no difference afterward. This is the strongest available argument for §0's purpose, and it is an argument about deadlines rather than principles. A report that was cheap to collect while a model was served becomes unobtainable at any price once it is not, and the archive is then the only remaining record of what that checkpoint said about itself. Every currently served model is a closing window.
 
 This makes the two roles complementary rather than hierarchical:
 
